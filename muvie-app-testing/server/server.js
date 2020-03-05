@@ -1,15 +1,20 @@
 import express from 'express';
+import morgan from 'morgan';
+import mongoose from 'mongoose';
+import router from './router';
 
-//initialize the server
+//connect to mongodb
+mongoose.connect('mongodb://localhost/movies');
+
+//initialize server
 const app = express();
 
-//route just for testing purposes for now
-app.get('/', (req,res) => {
-    res.send('<h1>Hello world! IIIIIt woooooorks hahhahahahahaha</h1>')
-});
+//log outputs with morgan
+app.use(morgan('combined'));
+//use v1 as prefix for all API endpoints ???? LOL
+app.use('/v1', router);
 
-const PORT = 2000;
-//listen to the server
-app.listen(PORT, () => {
-    console.log(`App listening at port ${PORT}`);
-})
+const server = app.listen(2000, () => {
+    const {address, port} = server.address();
+    console.log(`Listening at http://${address}:${port}`)
+});
